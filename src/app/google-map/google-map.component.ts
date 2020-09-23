@@ -15,6 +15,12 @@ export class GoogleMapComponent implements OnInit {
 
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
 
+  options: google.maps.MapOptions = {
+    center: {lat: 35.095192, lng: 33.203430},
+    zoom: 8.3,
+    disableDefaultUI: true
+  }
+
   center = {lat: 24, lng: 12};
   markerOptions = {draggable: false};
   markerPositions: google.maps.LatLngLiteral[] = [];
