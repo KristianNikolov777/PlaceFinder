@@ -7,6 +7,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
+import { PlaceService } from '../place.service';
 
 @Component({
   selector: 'app-places-search',
@@ -28,21 +29,20 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
     types: ['establishment'],
   };
   autocompleteInput: string;
-  formattedaddress: string;
   
 
-  constructor() {}
+  constructor(private placeService: PlaceService) {}
 
   ngOnInit(): void {}
 
   ngAfterViewInit() {
   }
 
-  public AddressChange(address: any) { 
-    //setting address from API to local variable 
-    console.log(address);
+  public onAddressChange(address: any) { 
     
-     this.formattedaddress = address.formatted_address; 
+      this.placeService.setPlace(address);
+      console.log(address);
+      
   } 
 
   // private getPlaceAutocomplete() {

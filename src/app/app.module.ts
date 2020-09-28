@@ -11,13 +11,17 @@ import { PlacesListingComponent } from './places/places-listing/places-listing.c
 import {MatInputModule} from '@angular/material/input'
 import { FormsModule } from '@angular/forms';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
+import { PlaceDetailComponent } from './places/places-listing/place-detail/place-detail.component';
+import { PlaceItemComponent } from './places/places-listing/place-item/place-item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlacesComponent,
     PlacesSearchComponent,
-    PlacesListingComponent
+    PlacesListingComponent,
+    PlaceDetailComponent,
+    PlaceItemComponent
   ],
   imports: [
     BrowserModule,
