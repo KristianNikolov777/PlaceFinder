@@ -25,10 +25,13 @@ export class PlaceService {
       address.rating,
       address.opening_hours.weekday_text,
       address.photos[0].getUrl(),
-      address.website
+      address.website,
+      address.geometry.location.toJSON()
     )
     console.log(this.place);
     console.log(address.opening_hours.isOpen());
+    console.log(address.geometry.location.lat());
+    
     
     this.addressChanged.next({...this.place});
   }

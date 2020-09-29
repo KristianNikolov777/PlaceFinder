@@ -7,6 +7,7 @@ export class Place {
                 public rating: number,
                 public workingHours: [],
                 public imgUrl: string,
-                public webpageUrl: string) {}
+                public webpageUrl: string,
+                public location: {lat: number, lng: number}) {}
                 
 }

@@ -1,18 +1,18 @@
 <div class="row">
     <div class="col-xs-12">
         <form>
-            <!-- <mat-form-field class="example-full-width">
+            <mat-form-field class="example-full-width">
                 <mat-label>Search for a place</mat-label>
-                <input matInput  placeholder="Ex. Restaurants">
+                <input matInput  ngx-google-places-autocomplete [options]='options'  (onAddressChange)="onAddressChange($event)" name="autocompleteInput">
               </mat-form-field>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="searchPlace">Search for a place</label>
               <input #searchInput [(ngModel)]="autocompleteInput" type="text" class="form-control" name="autocompleteInput"/>
             </div> -->
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="searchPlace">Search for a place</label>
               <input ngx-google-places-autocomplete [options]='options'  (onAddressChange)="onAddressChange($event)" class="form-control" name="autocompleteInput"/>
-            </div>
+            </div> -->
           </form>
     </div>
 </div>

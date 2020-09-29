@@ -8,7 +8,8 @@ import { GoogleMapModule } from './google-map/google-map.module';
 import { PlacesComponent } from './places/places.component';
 import { PlacesSearchComponent } from './places/places-search/places-search.component';
 import { PlacesListingComponent } from './places/places-listing/places-listing.component';
-import {MatInputModule} from '@angular/material/input'
+import { MatInputModule } from '@angular/material/input'
+import { MatCardModule } from '@angular/material/card'; 
 import { FormsModule } from '@angular/forms';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { PlaceDetailComponent } from './places/places-listing/place-detail/place-detail.component';
@@ -30,7 +31,8 @@ import { PlaceItemComponent } from './places/places-listing/place-item/place-ite
     BrowserAnimationsModule,
     GoogleMapModule,
     GooglePlaceModule,
-    MatInputModule
+    MatInputModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

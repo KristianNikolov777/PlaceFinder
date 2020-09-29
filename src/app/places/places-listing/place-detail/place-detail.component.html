@@ -1,11 +1,25 @@
 <div class="place-detail" *ngIf="place">
-    <img [src]="place.imgUrl" alt="" class="img-responsive" style="max-height: 100px;"/>
+  <mat-card>
+    <img mat-card-image [src]="place.imgUrl" alt="" class="img-responsive" style="max-width: 240px;"/>
+    <mat-card-header>
+      
+      <mat-card-title>{{ place.name }}</mat-card-title>
+      <mat-card-subtitle>{{ place.vicinity}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ place.phoneNumber }}</p>
+      <p>{{ place.isOpen ? "Open" : "Closed" }}</p>
+      <p>{{ place.rating }}</p>
+      <p>{{ place.webpageUrl }}</p>
+    </mat-card-content>
+  </mat-card>
+    <!-- <img [src]="place.imgUrl" alt="" class="img-responsive" style="max-height: 100px;"/>
     <h3>{{ place.name }}</h3>
     <p>{{ place.vicinity }}</p>
     <p>{{ place.phoneNumber }}</p>
     <p>{{ place.isOpen ? "Open" : "Closed" }}</p>
     <ul><li *ngFor="let workingDay of place.workingHours">{{workingDay}}</li></ul>
     <p>{{ place.rating }}</p>
-    <p>{{ place.webpageUrl }}</p>
+    <p>{{ place.webpageUrl }}</p> -->
   </div>
   
