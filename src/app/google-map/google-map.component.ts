@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { LatLngLiteral } from 'ngx-google-places-autocomplete/objects/latLng';
 import { Subscription } from 'rxjs';
-import { PlaceService } from '../places/place.service';
+import { PlaceService } from '../places-search/place.service';
 
 @Component({
   selector: 'app-google-map',

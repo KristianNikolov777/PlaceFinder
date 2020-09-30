@@ -4,16 +4,21 @@
             <mat-form-field class="example-full-width">
                 <mat-label>Search for a place</mat-label>
                 <input matInput  ngx-google-places-autocomplete [options]='options'  (onAddressChange)="onAddressChange($event)" name="autocompleteInput">
-              </mat-form-field>
-            <!-- <div class="form-group">
-              <label for="searchPlace">Search for a place</label>
-              <input #searchInput [(ngModel)]="autocompleteInput" type="text" class="form-control" name="autocompleteInput"/>
-            </div> -->
+            </mat-form-field>
+            <div class="form-group">
+              <label for="searchBox">Search for a place</label>
+              <input #searchBoxEl [(ngModel)]="autocompleteInput" type="text" class="form-control" name="searchBoxEl"/>
+            </div>
             <!-- <div class="form-group">
               <label for="searchPlace">Search for a place</label>
               <input ngx-google-places-autocomplete [options]='options'  (onAddressChange)="onAddressChange($event)" class="form-control" name="autocompleteInput"/>
             </div> -->
           </form>
     </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+      <app-place-detail></app-place-detail>
+  </div>
 </div>
 

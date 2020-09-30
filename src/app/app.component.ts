@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'PlaceFinder';
+  address: {};
+
+  getAddress(place: object) { 
+    this.address = place['formatted_address'];
+    console.log('------------------------------------');
+    
+    console.log(this.address)
+  }
 }

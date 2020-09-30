@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Place } from 'src/app/shared/place.model';
-import { PlaceService } from '../../place.service';
+import { PlaceService } from '../place.service';
 @Component({
   selector: 'app-place-detail',
   templateUrl: './place-detail.component.html',
