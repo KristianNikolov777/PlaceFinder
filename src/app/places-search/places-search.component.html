@@ -6,7 +6,7 @@
                 <input matInput  ngx-google-places-autocomplete [options]='options'  (onAddressChange)="onAddressChange($event)" name="autocompleteInput">
             </mat-form-field>
             <div class="form-group">
-              <label for="searchBox">Search for a place</label>
+              <label for="searchBox">Search by query</label>
               <input #searchBoxEl [(ngModel)]="autocompleteInput" type="text" class="form-control" name="searchBoxEl"/>
             </div>
             <!-- <div class="form-group">
