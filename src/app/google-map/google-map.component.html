@@ -1,18 +1,24 @@
 <!-- <div *ngIf="apiLoaded | async"> -->
-  <google-map height="400px"
-            width="750px"
-            [options]="options"
-            (mapMousemove)="move($event)"
-            (mapRightclick)="removeLastMarker()"
-            >
-  <map-marker #marker="mapMarker"
-              *ngFor="let markerPosition of markerPositions"
-              [position]="markerPosition"
-              [options]="markerOptions"
-              (mapClick)="openInfoWindow(marker)"></map-marker>
+  <div >
+    <google-map #map
+  height="400px"
+  width="750px"
+  [options]="options"
+  (mapMousemove)="move($event)"
+  (mapRightclick)="removeLastMarker()"
+>
+  <map-marker
+    #marker="mapMarker"
+    *ngFor="let markerPosition of markerPositions"
+    [position]="markerPosition"
+    [options]="markerOptions"
+    (mapClick)="openInfoWindow(marker)"
+  ></map-marker>
   <map-info-window>Info Window content</map-info-window>
 </google-map>
+  </div>
+
 <!-- </div> -->
 
-<div>Latitude: {{display?.lat}}</div>
-<div>Longitude: {{display?.lng}}</div>     
+<div>Latitude: {{ display?.lat }}</div>
+<div>Longitude: {{ display?.lng }}</div>

@@ -1,29 +1,22 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { LatLngLiteral } from 'ngx-google-places-autocomplete/objects/latLng';
 import { Subscription } from 'rxjs';
 import { PlaceService } from '../places-search/place.service';
+import { Place } from '../shared/place.model';
+
 
 @Component({
   selector: 'app-google-map',
   templateUrl: './google-map.component.html',
   styleUrls: ['./google-map.component.scss']
 })
-export class GoogleMapComponent implements OnInit, OnDestroy {
-  placeSubscription: Subscription
- 
-  constructor(private placeService: PlaceService) { 
-  }
+export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  ngOnInit(): void {
-    // this.getCurrentPos();
-    this.placeSubscription = this.placeService.addressChanged.subscribe((place) => {
-      this.addMarker(place.location);
-    })
-  }
-
+  @ViewChild('map', {static: false}) mapComponent: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
-  // {lat: 35.095192, lng:33.203430 }
+  
+  placeSubscription: Subscription
 
   options: google.maps.MapOptions = {
     center: this.getCurrentPos() ,
@@ -31,11 +24,28 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     disableDefaultUI: true
   };
 
-  center = {lat: 24, lng: 12};
   markerOptions = {draggable: false};
   markerPositions: google.maps.LatLngLiteral[] = [];
-  zoom = 4;
   display?: google.maps.LatLngLiteral;
+  
+ 
+  constructor(private placeService: PlaceService) { 
+  }
+
+  ngOnInit(): void {
+    this.placeSubscription = this.placeService.placesChanged.subscribe((places: Place[]) => {
+      this.markerPositions = [];
+      places.forEach((place) => {
+       
+    
+        // this.addMarker(place.location);
+      })
+    })
+  }
+
+  ngAfterViewInit() {
+    this.placeService.initGooglePlacesService(this.mapComponent.googleMap);
+  }
 
   getCurrentPos() {
     let pos: google.maps.LatLngLiteral = {lat: 35.095192, lng:33.203430 };
@@ -50,16 +60,9 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
       
       return pos;
     } 
-
-    // this.options = {
-    //   center: pos ,
-    //   zoom: 9,
-    //   disableDefaultUI: true
-    // }
   }
 
   addMarker(location: LatLngLiteral) {
-    this.markerPositions = [];
     this.markerPositions.push(location);
   }
 

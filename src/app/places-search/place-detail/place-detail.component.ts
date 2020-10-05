@@ -14,8 +14,8 @@ export class PlaceDetailComponent implements OnInit, OnDestroy {
   constructor(private placeService: PlaceService) { }
 
   ngOnInit(): void {
-    this.placeSubscription = this.placeService.addressChanged.subscribe((place: Place) => {
-      this.place = place;
+    this.placeSubscription = this.placeService.placesChanged.subscribe((places: Place []) => {
+      this.place = places[0];
     })
   }
 

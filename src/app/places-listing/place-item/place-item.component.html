@@ -1,1 +1,18 @@
-<p>place-item works!</p>
+<!-- <h3>{{place.name}}</h3>
+<p>{{place.vicinity}}</p>
+<img [src]="place.imgUrl" alt="" style="max-height: 100px; max-width: 100px;"> -->
+
+<a style="cursor: pointer;"
+   class="list-group-item clearfix">
+    <div class="pull-left">
+        <h4 class="list-group-item-heading">{{ place.name }}</h4>
+        <p class="list-group-item-text">{{ place.vicinity }}</p>
+    </div>
+    <span class="pull-right">
+        <img 
+        [src]="place.imgUrl" 
+        alt="{{ place.name }}" 
+        class="img-responsive" 
+        style="max-height: 100px;">
+    </span>
+</a>

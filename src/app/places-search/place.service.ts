@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { async } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { Place } from '../shared/place.model';
 
@@ -6,33 +7,76 @@ import { Place } from '../shared/place.model';
   providedIn: 'root'
 })
 export class PlaceService {
-  addressChanged = new Subject<Place>();
+  placesChanged = new Subject<Place[]>();
+  googlePlacesService: google.maps.places.PlacesService;
+  
+  
 
   constructor() { }
 
-  private place: Place;
+  private places: Place[] = [];
   
-  getPlace () {
-    return {...this.place};
+  getPlace (index: number) {
+    return this.places[index];
   }
 
-  setPlace (address: any) {
-    this.place = new Place(
-      address.name,
-      address.international_phone_number,
-      address.vicinity,
-      address.opening_hours.isOpen(),
-      address.rating,
-      address.opening_hours.weekday_text,
-      address.photos[0].getUrl(),
-      address.website,
-      address.geometry.location.toJSON()
-    )
-    console.log(this.place);
-    console.log(address.opening_hours.isOpen());
-    console.log(address.geometry.location.lat());
-    
-    
-    this.addressChanged.next({...this.place});
+  getPlaces () {
+    return [...this.places];
   }
+
+  setPlace (unformatedPlace: any) {
+    // console.log(unformatedPlace);
+    
+    const place = new Place(
+      unformatedPlace.name,
+      unformatedPlace.international_phone_number,
+      unformatedPlace.vicinity,
+      unformatedPlace.opening_hours.isOpen(),
+      unformatedPlace.rating,
+      unformatedPlace.opening_hours.weekday_text,
+      unformatedPlace.photos[0].getUrl(),
+      unformatedPlace.website,
+      unformatedPlace.geometry.location.toJSON()
+    )
+
+    this.places.push(place);
+
+    // console.log(place);
+    
+    this.placesChanged.next([...this.places]);
+  }
+
+  resetPlaces() {
+    this.places = [];
+  }
+
+  initGooglePlacesService(map: google.maps.Map) {
+    this.googlePlacesService = new google.maps.places.PlacesService(map);
+  }
+
+ async getPlaceDetails(unformatedPlace: any) {
+    let request: google.maps.places.PlaceDetailsRequest = 
+    {
+      placeId: unformatedPlace.place_id,
+      fields: ['name', 'vicinity', 'rating', 'international_phone_number', 'geometry', 'opening_hours', 'utc_offset_minutes', 'photos', 'website']
+    };
+   
+
+    
+    
+    this.googlePlacesService.getDetails(request, (place, status) => {
+      // console.log(place);
+      // console.log(status);
+      // if (status === 'OK') {
+      //   this.setPlace(place);
+      // }
+      if (status !== 'OK') return;
+      
+      this.setPlace(place);
+      
+      
+      
+    })
+  }
+
 }

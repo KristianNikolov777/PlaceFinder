@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Place } from 'src/app/shared/place.model';
 
 @Component({
   selector: 'app-place-item',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./place-item.component.scss']
 })
 export class PlaceItemComponent implements OnInit {
+  @Input() place: Place;
 
   constructor() { }
 

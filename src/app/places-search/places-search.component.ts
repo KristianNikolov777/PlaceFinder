@@ -44,7 +44,7 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
   public onAddressChange(address: any) { 
     
       this.placeService.setPlace(address);
-      console.log(address);
+      // console.log(address);
       
   } 
 
@@ -52,8 +52,12 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
     if (!this.searchBoxEl) return;
     const searchBox = new google.maps.places.SearchBox(this.searchBoxEl.nativeElement, this.options);
       google.maps.event.addListener(searchBox, 'places_changed', () => {
-        const places = searchBox.getPlaces();
-        console.log(places);
+        const unformatedPlaces = searchBox.getPlaces();
+        // console.log(unformatedPlaces);
+        this.placeService.resetPlaces();
+        unformatedPlaces.forEach((unformatedPlace) => {
+          this.placeService.getPlaceDetails(unformatedPlace);
+        })
         
         // this.invokeEvent(places);
         // console.log(searchBox);
