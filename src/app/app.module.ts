@@ -5,7 +5,8 @@ import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input'
 import { MatCardModule } from '@angular/material/card'; 
-import { MatTabsModule } from '@angular/material/tabs'
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatListModule } from '@angular/material/list';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,7 +33,8 @@ import { PlaceItemComponent } from './places-listing/place-item/place-item.compo
     GooglePlaceModule,
     MatInputModule,
     MatCardModule,
-    MatTabsModule
+    MatTabsModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

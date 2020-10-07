@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { async } from '@angular/core/testing';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Place } from '../shared/place.model';
 
 @Injectable({
@@ -8,6 +8,7 @@ import { Place } from '../shared/place.model';
 })
 export class PlaceService {
   placesChanged = new Subject<Place[]>();
+  placeSelected = new BehaviorSubject<Place>(null);
   googlePlacesService: google.maps.places.PlacesService;
   
   
@@ -25,23 +26,23 @@ export class PlaceService {
   }
 
   setPlace (unformatedPlace: any) {
-    // console.log(unformatedPlace);
+    console.log(unformatedPlace);
     
     const place = new Place(
       unformatedPlace.name,
-      unformatedPlace.international_phone_number,
-      unformatedPlace.vicinity,
-      unformatedPlace.opening_hours.isOpen(),
-      unformatedPlace.rating,
-      unformatedPlace.opening_hours.weekday_text,
-      unformatedPlace.photos[0].getUrl(),
-      unformatedPlace.website,
-      unformatedPlace.geometry.location.toJSON()
+      unformatedPlace.formatted_address,
+      unformatedPlace.geometry.location.toJSON(),
+      unformatedPlace.photos && unformatedPlace.photos.length > 0 ? unformatedPlace.photos[0].getUrl() : 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQXBKqhH8VS4qdb6Lcu-6SOe0qKxQmZo3pJvQ&usqp=CAU',
+      unformatedPlace.opening_hours ? unformatedPlace.opening_hours.weekday_text : null,
+      unformatedPlace.opening_hours ? unformatedPlace.opening_hours.isOpen() : null,
+      unformatedPlace.website ? unformatedPlace.website : null,
+      unformatedPlace.international_phone_number ? unformatedPlace.international_phone_number : null,
+      unformatedPlace.rating ? unformatedPlace.rating : null,
     )
 
     this.places.push(place);
 
-    // console.log(place);
+    console.log(place);
     
     this.placesChanged.next([...this.places]);
   }
@@ -58,7 +59,7 @@ export class PlaceService {
     let request: google.maps.places.PlaceDetailsRequest = 
     {
       placeId: unformatedPlace.place_id,
-      fields: ['name', 'vicinity', 'rating', 'international_phone_number', 'geometry', 'opening_hours', 'utc_offset_minutes', 'photos', 'website']
+      fields: ['name', 'formatted_address', 'rating', 'international_phone_number', 'geometry', 'opening_hours', 'utc_offset_minutes', 'photos', 'website']
     };
    
 

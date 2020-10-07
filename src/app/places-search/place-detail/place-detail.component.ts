@@ -15,7 +15,11 @@ export class PlaceDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.placeSubscription = this.placeService.placesChanged.subscribe((places: Place []) => {
-      this.place = places[0];
+      this.placeService.placeSelected.next(places[0])
+    })
+
+    this.placeSubscription = this.placeService.placeSelected.subscribe((place: Place) => {
+      this.place = place;
     })
   }
 

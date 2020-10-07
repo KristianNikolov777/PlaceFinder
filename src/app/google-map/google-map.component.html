@@ -12,7 +12,7 @@
     *ngFor="let markerPosition of markerPositions"
     [position]="markerPosition"
     [options]="markerOptions"
-    (mapClick)="openInfoWindow(marker)"
+    (mapClick)="onSelectMarker(marker)"
   ></map-marker>
   <map-info-window>Info Window content</map-info-window>
 </google-map>

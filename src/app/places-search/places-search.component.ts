@@ -28,6 +28,7 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
       country:["CY"] 
     },
     types: ['establishment'],
+    // fields: ['name', 'formatted_address', 'rating', 'international_phone_number', 'geometry', 'opening_hours', 'utc_offset_minutes', 'photos', 'website']
   };
   autocompleteInput: string;
   
@@ -42,9 +43,10 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
   }
 
   public onAddressChange(address: any) { 
-    
+      
+      this.placeService.resetPlaces()
       this.placeService.setPlace(address);
-      // console.log(address);
+      console.log(address);
       
   } 
 
@@ -69,4 +71,8 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
   // invokeEvent(places: Object) {
   //   this.setAddress.emit(places);
   // }
+
+  emptyInput(inputFieldRef: ElementRef) {
+    this.searchBoxEl.nativeElement.value = null;
+  }
 }

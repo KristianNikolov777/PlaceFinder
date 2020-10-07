@@ -1,1 +1,3 @@
-<app-place-item *ngFor="let place of places" [place]="place"></app-place-item>
+<mat-selection-list *ngIf="places" >
+    <app-place-item *ngFor="let place of places" [place]="place"></app-place-item>
+</mat-selection-list>

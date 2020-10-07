@@ -2,7 +2,7 @@
 <p>{{place.vicinity}}</p>
 <img [src]="place.imgUrl" alt="" style="max-height: 100px; max-width: 100px;"> -->
 
-<a style="cursor: pointer;"
+<!-- <a style="cursor: pointer;"
    class="list-group-item clearfix">
     <div class="pull-left">
         <h4 class="list-group-item-heading">{{ place.name }}</h4>
@@ -15,4 +15,20 @@
         class="img-responsive" 
         style="max-height: 100px;">
     </span>
+</a> -->
+<!-- <div [ngClass]="{active: place.name === selectedPlace.name}"> -->
+    <a mat-list-item style="cursor: pointer;" (click)="onSelectPlace()" [ngClass]="{active: place.name === selectedPlace.name}">
+    
+        <h4 matLine >{{ place.name }}</h4>
+        <p matLine >{{ place.address }}</p>
+
+    
+        <img 
+        matListIcon
+        [src]="place.imgUrl" 
+        alt="{{ place.name }}" 
+        class="img-responsive" 
+        style="max-height: 100px;">
+    
 </a>
+<!-- </div> -->

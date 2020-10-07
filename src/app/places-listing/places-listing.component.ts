@@ -8,7 +8,7 @@ import { Place } from '../shared/place.model';
   styleUrls: ['./places-listing.component.scss']
 })
 export class PlacesListingComponent implements OnInit {
-  places: Place[]
+  places: Place[];
 
   constructor(private placeService: PlaceService) { }
 
