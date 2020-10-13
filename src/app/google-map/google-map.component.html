@@ -1,5 +1,5 @@
 <!-- <div *ngIf="apiLoaded | async"> -->
-  <div >
+  <!-- <div >
     <google-map #map
   height="400px"
   width="750px"
@@ -8,7 +8,7 @@
   (mapRightclick)="removeLastMarker()"
 >
   <map-marker
-    #marker="mapMarker"
+    #marker="mapMarker";
     *ngFor="let markerPosition of markerPositions"
     [position]="markerPosition"
     [options]="markerOptions"
@@ -16,9 +16,13 @@
   ></map-marker>
   <map-info-window>Info Window content</map-info-window>
 </google-map>
-  </div>
+  </div> -->
 
 <!-- </div> -->
 
-<div>Latitude: {{ display?.lat }}</div>
-<div>Longitude: {{ display?.lng }}</div>
+<!-- <div>Latitude: {{ display?.lat }}</div>
+<div>Longitude: {{ display?.lng }}</div> -->
+
+<div #mapContainer id="map">
+   
+</div>

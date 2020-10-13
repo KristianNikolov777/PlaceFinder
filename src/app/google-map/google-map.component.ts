@@ -1,13 +1,14 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { LatLngLiteral } from 'ngx-google-places-autocomplete/objects/latLng';
 import { Subscription } from 'rxjs';
+
 import { PlaceService } from '../places-search/place.service';
 import { Place } from '../shared/place.model';
 
@@ -17,50 +18,76 @@ import { Place } from '../shared/place.model';
   styleUrls: ['./google-map.component.scss'],
 })
 export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('map', { static: false }) mapComponent: GoogleMap;
-  @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
-  markersArray: MapMarker[] = [];
-  markersPlaced = false;
-
-  placeSubscription: Subscription;
-  selectedPlaceSub: Subscription;
-
-  options: google.maps.MapOptions = {
+  @ViewChild('mapContainer', { static: false }) gmap: ElementRef;
+  placeSub: Subscription;
+  placeSelectedSub: Subscription;
+  map: google.maps.Map;
+  mapOptions: google.maps.MapOptions = {
     center: this.getCurrentPos(),
     zoom: 8.3,
     disableDefaultUI: true,
   };
-
+  markerInfo;
+  preloadedMarkers = [];
+  markers: google.maps.Marker[] = [];
   markerOptions = { draggable: false, animation: google.maps.Animation.DROP };
   markerPositions: google.maps.LatLngLiteral[] = [];
-  display?: google.maps.LatLngLiteral;
+
+  // @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow
 
   constructor(private placeService: PlaceService) {}
 
   ngOnInit(): void {
-    this.placeSubscription = this.placeService.placesChanged.subscribe(
+    this.placeSub = this.placeService.placesChanged.subscribe(
       (places: Place[]) => {
-        this.markerPositions = [];
+        this.deleteMarkers();
+        console.log(places);
+
         places.forEach((place) => {
-          this.addMarker(place.location);
+          this.preloadMarker(place.location, place.name);
         });
-        this.markersPlaced = true;
+        console.log(this.preloadedMarkers);
+
+        this.loadAllMarkers();
       }
     );
 
-    this.selectedPlaceSub = this.placeService.placeSelected.subscribe((place: Place) => {
-    if (this.markersPlaced) {
-      
-      console.log(this.mapComponent.googleMap);
-      
-      
-    }
-     
-    })
+    this.placeSelectedSub = this.placeService.placeSelected.subscribe(
+      (place: Place) => {
+        if (place == null) return;
+
+        const selectedMarker: google.maps.Marker = this.markers.find(
+          (marker) => {
+            const markerLocation = {
+              lat: marker.getPosition().lat(),
+              lng: marker.getPosition().lng(),
+            };
+
+            return (
+              markerLocation.lat === place.location.lat &&
+              markerLocation.lng === place.location.lng
+            );
+          }
+        );
+
+        if (
+          selectedMarker.getAnimation() == null ||
+          selectedMarker.getAnimation() === 2
+        ) {
+          this.clearMarkersAnimation();
+          this.highlightMarker(selectedMarker);
+        }
+      }
+    );
   }
 
   ngAfterViewInit() {
-    this.placeService.initGooglePlacesService(this.mapComponent.googleMap);
+    this.mapInitializer();
+    this.placeService.initGooglePlacesService(this.map);
+  }
+
+  mapInitializer() {
+    this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
   }
 
   getCurrentPos() {
@@ -78,47 +105,74 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  addMarker(location: LatLngLiteral) {
-    this.markerPositions.push(location);
-  }
-
-  move(event: google.maps.MouseEvent) {
-    this.display = event.latLng.toJSON();
-  }
-
-  async onSelectMarker(marker: MapMarker) {
-    // console.log(marker);
-    marker.options = { draggable: false, animation: google.maps.Animation.BOUNCE }
-    const places: Place[] = this.placeService.getPlaces();
-    // console.log(places);
-    const markerLocation = await {
-      lat: marker.marker.getPosition().lat(),
-      lng: marker.marker.getPosition().lng(),
+  preloadMarker(position: LatLngLiteral, placeName: string) {
+    this.markerInfo = {
+      position: new google.maps.LatLng(position.lat, position.lng),
+      map: this.map,
+      title: placeName,
+      options: { draggable: false, animation: google.maps.Animation.DROP },
     };
-    // console.log(markerLocation);
-    
-    const markerPlace: Place = places.find((place) => {
-      return place.location.lat === markerLocation.lat && place.location.lng === markerLocation.lng
+    this.preloadedMarkers.push(this.markerInfo);
+  }
+
+  loadAllMarkers() {
+    this.preloadedMarkers.forEach((markerInfo) => {
+      const marker = new google.maps.Marker({ ...markerInfo });
+      marker.addListener('click', () => {
+        this.onClickMarker(marker);
+      });
+      marker.setMap(this.map);
+      this.markers.push(marker);
+
+      // const infoWindow = new google.maps.InfoWindow({
+      //   content: marker.getTitle()
+      // });
+      // infoWindow.open(marker.getMap(), marker);
     });
-
-    this.placeService.placeSelected.next(markerPlace)
-    // console.log(markerPlace);
-
-    console.log(this.infoWindow);
-    
-    // this.infoWindow.infoWindow.content = markerPlace.name;
-    // this.infoWindow.open(marker);
   }
 
-  removeLastMarker() {
-    this.markerPositions.pop();
+  clearMarkers() {
+    this.markers.forEach((marker) => {
+      marker.setMap(null);
+    });
   }
 
-  highlightMarker() {
+  deleteMarkers() {
+    this.clearMarkers();
+    this.preloadedMarkers = [];
+    this.markers = [];
+  }
 
+  onClickMarker(marker: google.maps.Marker) {
+    this.clearMarkersAnimation();
+    this.highlightMarker(marker);
+
+    const places: Place[] = this.placeService.getPlaces();
+    const markerLocation = {
+      lat: marker.getPosition().lat(),
+      lng: marker.getPosition().lng(),
+    };
+    const markerPlace: Place = places.find((place) => {
+      return (
+        place.location.lat === markerLocation.lat &&
+        place.location.lng === markerLocation.lng
+      );
+    });
+    this.placeService.placeSelected.next(markerPlace);
+  }
+
+  highlightMarker(marker: google.maps.Marker) {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
+
+  clearMarkersAnimation() {
+    this.markers.forEach((marker) => {
+      marker.setAnimation(null);
+    });
   }
 
   ngOnDestroy() {
-    this.placeSubscription.unsubscribe();
+    this.placeSub.unsubscribe();
+    this.placeSelectedSub.unsubscribe();
   }
 }

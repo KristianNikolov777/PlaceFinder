@@ -19,8 +19,8 @@ export class PlaceItemComponent implements OnInit, OnDestroy {
     this.selectedPlaceSub = this.placeService.placeSelected.subscribe((place: Place) => {
       this.selectedPlace = place;
     })
-    console.log(this.selectedPlace);
-    console.log(this.place);
+    // console.log(this.selectedPlace);
+    // console.log(this.place);
     
   }
 
