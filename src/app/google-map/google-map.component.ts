@@ -38,6 +38,9 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private placeService: PlaceService) {}
 
   ngOnInit(): void {
+    let previousMarker: google.maps.Marker;
+    console.log(previousMarker);
+    
     this.placeSub = this.placeService.placesChanged.subscribe(
       (places: Place[]) => {
         this.deleteMarkers();
@@ -47,13 +50,15 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
           this.preloadMarker(place.location, place.name);
         });
         console.log(this.preloadedMarkers);
-
+        
         this.loadAllMarkers();
       }
     );
 
     this.placeSelectedSub = this.placeService.placeSelected.subscribe(
       (place: Place) => {
+        console.log(previousMarker);
+        
         if (place == null) return;
 
         const selectedMarker: google.maps.Marker = this.markers.find(
@@ -69,14 +74,25 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
             );
           }
         );
-
-        if (
-          selectedMarker.getAnimation() == null ||
-          selectedMarker.getAnimation() === 2
-        ) {
-          this.clearMarkersAnimation();
+            
+          console.log(selectedMarker)  
+        // if (
+        //   selectedMarker.getAnimation() == null ||
+        //   selectedMarker.getAnimation() === 2
+        // ) {
+          
+          if (previousMarker && previousMarker.getTitle() !== selectedMarker.getTitle() ) {
+            this.clearMarkerAnimation(previousMarker)
+          }
+          this.map.setCenter(selectedMarker.getPosition());
+          this.map.setZoom(13);
           this.highlightMarker(selectedMarker);
-        }
+          previousMarker = selectedMarker;
+          // this.clearMarkersAnimation();
+          console.log(selectedMarker.getAnimation())
+          
+          
+        // }
       }
     );
   }
@@ -117,6 +133,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadAllMarkers() {
     this.preloadedMarkers.forEach((markerInfo) => {
+      
       const marker = new google.maps.Marker({ ...markerInfo });
       marker.addListener('click', () => {
         this.onClickMarker(marker);
@@ -144,8 +161,8 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onClickMarker(marker: google.maps.Marker) {
-    this.clearMarkersAnimation();
-    this.highlightMarker(marker);
+    // this.clearMarkersAnimation();
+    // this.highlightMarker(marker);
 
     const places: Place[] = this.placeService.getPlaces();
     const markerLocation = {
@@ -166,9 +183,11 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   clearMarkersAnimation() {
-    this.markers.forEach((marker) => {
-      marker.setAnimation(null);
-    });
+    this.markers.forEach(this.clearMarkerAnimation);
+  }
+
+  clearMarkerAnimation(marker: google.maps.Marker) {
+    marker.setAnimation(null)
   }
 
   ngOnDestroy() {
