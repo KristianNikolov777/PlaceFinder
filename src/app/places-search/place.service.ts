@@ -8,6 +8,7 @@ import { Place } from '../shared/place.model';
 export class PlaceService {
   placesChanged = new Subject<Place[]>();
   placeSelected = new BehaviorSubject<Place>(null);
+  searchModeChanged = new BehaviorSubject<string>('byPlace')
 
   googlePlacesService: google.maps.places.PlacesService;
 
@@ -54,6 +55,7 @@ export class PlaceService {
 
   resetPlaces() {
     this.places = [];
+    this.placesChanged.next([]);
   }
 
   initGooglePlacesService(map: google.maps.Map) {

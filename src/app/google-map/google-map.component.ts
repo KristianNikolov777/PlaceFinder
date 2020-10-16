@@ -19,12 +19,15 @@ import { Place } from '../shared/place.model';
 })
 export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('mapContainer', { static: false }) gmap: ElementRef;
-  placeSub: Subscription;
+  placesChangedSub: Subscription;
   placeSelectedSub: Subscription;
+  searchChangedSub: Subscription;
   map: google.maps.Map;
+  cyprusDefaultpos: google.maps.LatLngLiteral = { lat: 35.095192, lng: 33.20343 };
+  defaultZoom = 8.3;
   mapOptions: google.maps.MapOptions = {
-    center: this.getCurrentPos(),
-    zoom: 8.3,
+    center: this.cyprusDefaultpos,
+    zoom: this.defaultZoom,
     disableDefaultUI: true,
   };
   markerInfo;
@@ -41,10 +44,12 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     let previousMarker: google.maps.Marker;
     console.log(previousMarker);
     
-    this.placeSub = this.placeService.placesChanged.subscribe(
+    this.placesChangedSub = this.placeService.placesChanged.subscribe(
       (places: Place[]) => {
+       
+        if (places.length < 1) return
+
         this.deleteMarkers();
-        console.log(places);
 
         places.forEach((place) => {
           this.preloadMarker(place.location, place.name);
@@ -75,11 +80,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         );
             
-          console.log(selectedMarker)  
-        // if (
-        //   selectedMarker.getAnimation() == null ||
-        //   selectedMarker.getAnimation() === 2
-        // ) {
+          console.log(selectedMarker) 
           
           if (previousMarker && previousMarker.getTitle() !== selectedMarker.getTitle() ) {
             this.clearMarkerAnimation(previousMarker)
@@ -95,6 +96,14 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
         // }
       }
     );
+
+    this.searchChangedSub = this.placeService.searchModeChanged.subscribe(() => {
+      if (!this.map) return
+      this.deleteMarkers();
+      this.placeService.resetPlaces();
+      this.map.setCenter(this.cyprusDefaultpos);
+      this.map.setZoom(this.defaultZoom)
+    })
   }
 
   ngAfterViewInit() {
@@ -104,21 +113,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   mapInitializer() {
     this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
-  }
-
-  getCurrentPos() {
-    let pos: google.maps.LatLngLiteral = { lat: 35.095192, lng: 33.20343 };
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-      });
-      console.log(pos);
-
-      return pos;
-    }
   }
 
   preloadMarker(position: LatLngLiteral, placeName: string) {
@@ -191,7 +185,26 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.placeSub.unsubscribe();
+    this.placesChangedSub.unsubscribe();
     this.placeSelectedSub.unsubscribe();
+    this.searchChangedSub.unsubscribe();
   }
+
+  // getCurrentPos(): Promise<google.maps.LatLngLiteral> | google.maps.LatLngLiteral {
+
+  //   if (navigator.geolocation) {
+  //     return new Promise((resolve, reject) => {
+  //       navigator.geolocation.getCurrentPosition(function (position) {
+  //         resolve({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+
+  //         reject(this.cyprusDefaultpos);
+  //       });
+  //     })
+  //   } else {
+  //     return this.cyprusDefaultpos;
+  //   }
+  // }
 }

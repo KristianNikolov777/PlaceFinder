@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
   Output,
-  EventEmitter,
+  EventEmitter
 } from '@angular/core';
 import { Place } from '../shared/place.model';
 import { PlaceService } from './place.service';
@@ -19,6 +19,7 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBoxEl', { static: false }) searchBoxEl: ElementRef;
   @Output() setAddress: EventEmitter<any> = new EventEmitter();
 
+  searchMode = 'byPlace';
   defaultBounds = new google.maps.LatLngBounds(
     new google.maps.LatLng(35.1731247015, 34.0048808123),
     new google.maps.LatLng(34.5718694118, 32.2566671079)
@@ -68,5 +69,19 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
 
   emptyInput(inputFieldRef: ElementRef) {
     this.searchBoxEl.nativeElement.value = null;
+  }
+
+  onByPlace() {
+
+    this.searchMode = 'byPlace';
+    this.placeService.searchModeChanged.next(this.searchMode);
+    
+  }
+
+  onByQuery() {
+    
+    this.searchMode = 'byQuery';
+    this.placeService.searchModeChanged.next(this.searchMode);
+    
   }
 }

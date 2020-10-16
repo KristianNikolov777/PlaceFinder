@@ -1,3 +1,3 @@
-<mat-selection-list *ngIf="places" >
+<mat-selection-list *ngIf="places && searchMode === 'byQuery'" >
     <app-place-item *ngFor="let place of places" [place]="place"></app-place-item>
 </mat-selection-list>
