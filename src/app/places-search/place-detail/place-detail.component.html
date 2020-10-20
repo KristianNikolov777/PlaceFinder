@@ -1,6 +1,13 @@
+<div *ngIf="placeIsLoading">
+  <mat-card-header>
+    <mat-card-title>Place is loading...</mat-card-title>
+  </mat-card-header>
+</div>
 <div class="place-detail" *ngIf="place">
   <mat-card>
-    <img mat-card-image [src]="place.imgUrl" alt="" class="img-responsive" style="max-width: 240px;"/>
+
+    <div>
+      <img mat-card-image [src]="place.imgUrl" alt="" class="img-responsive" style="max-width: 240px;"/>
     <mat-card-header>
       
       <mat-card-title>{{ place.name }}</mat-card-title>
@@ -12,6 +19,8 @@
       <p *ngIf="place.rating">{{ place.rating }}</p>
       <a *ngIf="place.webpageUrl" [href]="place.webpageUrl">{{ place.webpageUrl }}</a>
     </mat-card-content>
+    </div>
+    
   </mat-card>
   </div>
   

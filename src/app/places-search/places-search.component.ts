@@ -36,7 +36,14 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
 
   constructor(private placeService: PlaceService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.placeService.placeSelected.subscribe((place: Place) => {
+    //   if (place) {
+    //     this.placeIsLoading = false;
+    //   }
+    // }
+    // )
+  }
 
   ngAfterViewInit() {
     this.getPlaceAutocomplete();
@@ -55,6 +62,7 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
       this.options
     );
     google.maps.event.addListener(searchBox, 'places_changed', async () => {
+      this.placeService.placeIsLoading.next(true);
       const unformatedPlaces = searchBox.getPlaces();
       this.placeService.resetPlaces();
       this.placeService.getPlacesDetails(unformatedPlaces).then((results) => {
@@ -63,6 +71,7 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
           .map(this.placeService.createPlace);
         
         this.placeService.setPlaces([...places]);
+        
       });
     });
   }

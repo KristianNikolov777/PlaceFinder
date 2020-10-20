@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { PlaceService } from 'src/app/places-search/place.service';
 import { Place } from 'src/app/shared/place.model';
 
@@ -13,14 +13,13 @@ export class PlaceItemComponent implements OnInit, OnDestroy {
   selectedPlace: Place;
   selectedPlaceSub: Subscription;
 
-  constructor(private placeService: PlaceService) { }
+  constructor(private placeService: PlaceService, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.selectedPlaceSub = this.placeService.placeSelected.subscribe((place: Place) => {
       this.selectedPlace = place;
+      this.cd.detectChanges()
     })
-    // console.log(this.selectedPlace);
-    // console.log(this.place);
     
   }
 

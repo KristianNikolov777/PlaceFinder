@@ -9,6 +9,7 @@ export class PlaceService {
   placesChanged = new Subject<Place[]>();
   placeSelected = new BehaviorSubject<Place>(null);
   searchModeChanged = new BehaviorSubject<string>('byPlace')
+  placeIsLoading = new BehaviorSubject<boolean>(false);
 
   googlePlacesService: google.maps.places.PlacesService;
 
@@ -54,8 +55,10 @@ export class PlaceService {
   }
 
   resetPlaces() {
+    console.log('reset')
     this.places = [];
     this.placesChanged.next([]);
+    this.placeSelected.next(null);
   }
 
   initGooglePlacesService(map: google.maps.Map) {
