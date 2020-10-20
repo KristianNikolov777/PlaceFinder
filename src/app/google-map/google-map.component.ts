@@ -120,7 +120,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       position: new google.maps.LatLng(position.lat, position.lng),
       map: this.map,
       title: placeName,
-      options: { draggable: false, animation: google.maps.Animation.DROP },
+      options: { draggable: false, animation: google.maps.Animation.DROP, icon: '../../assets/images/marker.png' },
     };
     this.preloadedMarkers.push(this.markerInfo);
   }

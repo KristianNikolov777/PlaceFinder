@@ -17,7 +17,7 @@
       <p *ngIf="place.phoneNumber">{{ place.phoneNumber }}</p>
       <p *ngIf="place.isOpen !== null">{{ place.isOpen ? "Open" : "Closed" }}</p>
       <p *ngIf="place.rating">{{ place.rating }}</p>
-      <a *ngIf="place.webpageUrl" [href]="place.webpageUrl">{{ place.webpageUrl }}</a>
+      <a *ngIf="place.webpageUrl" [href]="place.webpageUrl" target="_blank">{{ place.webpageUrl }}</a>
     </mat-card-content>
     </div>
     

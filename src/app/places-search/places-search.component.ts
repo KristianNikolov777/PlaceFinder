@@ -7,6 +7,7 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Place } from '../shared/place.model';
 import { PlaceService } from './place.service';
 
@@ -17,6 +18,7 @@ import { PlaceService } from './place.service';
 })
 export class PlacesSearchComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBoxEl', { static: false }) searchBoxEl: ElementRef;
+  @ViewChild('autocompleteEl', { static: false }) autocompleteEl: ElementRef;
   @Output() setAddress: EventEmitter<any> = new EventEmitter();
 
   searchMode = 'byPlace';
@@ -55,6 +57,12 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
     this.placeService.setPlaces([place]);
   }
 
+  public onSelectedTabChange(matTabChange: MatTabChangeEvent) {
+    this.emptyInput();
+    this.searchMode = matTabChange.index === 0 ? 'byPlace' : 'byQuery';
+    this.placeService.searchModeChanged.next(this.searchMode);
+  }
+
   private getPlaceAutocomplete() {
     if (!this.searchBoxEl) return;
     const searchBox = new google.maps.places.SearchBox(
@@ -76,21 +84,8 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
     });
   }
 
-  emptyInput(inputFieldRef: ElementRef) {
+  private emptyInput() {
     this.searchBoxEl.nativeElement.value = null;
-  }
-
-  onByPlace() {
-
-    this.searchMode = 'byPlace';
-    this.placeService.searchModeChanged.next(this.searchMode);
-    
-  }
-
-  onByQuery() {
-    
-    this.searchMode = 'byQuery';
-    this.placeService.searchModeChanged.next(this.searchMode);
-    
+    this.autocompleteEl.nativeElement.value = null;
   }
 }
