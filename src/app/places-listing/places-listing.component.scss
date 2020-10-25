@@ -1,0 +1,9 @@
+mat-selection-list {
+    padding: 0;
+}
+@media (max-width: 768px) {
+    .list {
+        height: 25vh;
+        overflow-y: auto;
+    }
+}

@@ -26,7 +26,9 @@ export class PlaceService {
   }
 
   createPlace(unformatedPlace: any) {
+    
     const place = new Place(
+      unformatedPlace.name + unformatedPlace.geometry.location.toString(),
       unformatedPlace.name,
       unformatedPlace.formatted_address,
       unformatedPlace.geometry.location.toJSON(),
@@ -55,7 +57,6 @@ export class PlaceService {
   }
 
   resetPlaces() {
-    console.log('reset')
     this.places = [];
     this.placesChanged.next([]);
     this.placeSelected.next(null);

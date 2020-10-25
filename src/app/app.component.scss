@@ -1,0 +1,62 @@
+body {
+    overflow: hidden;
+}
+
+.container {
+    height: 100vh;
+    width: 100vw;
+    display: inline-flex;
+
+    .map {
+        position: relative;
+        width: 100vw;
+    }
+
+    .search {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .list {
+        width: 0vw;
+    }
+}
+
+
+.active-list {
+    .map {
+        width: 75vw;
+    }
+
+    .list {
+        width: 25vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {    
+        display: block;
+        .search {
+            width: 90vw;
+            position: absolute;
+            top: 10px;
+            left: 5vw;
+        }
+    
+        .list {
+            width: 0vw;
+        }
+    }
+    
+    .active-list {
+        .map {
+            height: 75vh;
+            width: 100vw;
+        }
+        .list {
+            height: 25vh;
+            width: 100vw;
+        }
+    }
+}

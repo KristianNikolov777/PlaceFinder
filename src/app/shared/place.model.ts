@@ -1,6 +1,7 @@
 export class Place {
 
-    constructor(public name: string,
+    constructor(public id: string,
+                public name: string,
                 public address: string,
                 public location: {lat: number, lng: number},
                 public imgUrl: string,
@@ -8,6 +9,6 @@ export class Place {
                 public isOpen: boolean,
                 public webpageUrl: string,
                 public phoneNumber: string,
-                public rating: number,) {}
+                public rating: number) {}
                 
 }

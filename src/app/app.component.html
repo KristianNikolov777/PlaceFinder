@@ -1,18 +1,11 @@
-<div class="row">
-  <div class="col-md-8">
-    <app-google-map></app-google-map>
-  </div>
-  <div class="col-md-4">
-    <!-- <mat-tab-group>
-  <mat-tab label="By Address"> </mat-tab>
-  <mat-tab label="By Category"></mat-tab>
-</mat-tab-group>
-<hr /> -->
-    <app-places-search (setAddress)="getAddress($event)"></app-places-search>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
+<div class="container" [class.active-list]="listIsActive" >
+    <div class="map">
+      <app-google-map></app-google-map>
+      <div class="search">
+        <app-places-search (setAddress)="getAddress($event)"></app-places-search>
+      </div>
+    </div>
+  <div class="list">
     <app-places-listing></app-places-listing>
   </div>
 </div>

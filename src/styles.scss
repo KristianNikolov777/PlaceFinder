@@ -1,5 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~bootstrap/dist/css/bootstrap.css";
+// @import "~bootstrap/dist/css/bootstrap.css";
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: hidden; }
+
+.url {
+    width: 250px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    color: unset;
+    display: inline-block;
+  }
+
+.custom-info-window {
+    text-align: center;
+    overflow: hidden;
+    .title {
+        font-size: 20px;
+        font-weight: 700;
+        padding-bottom: 10px;
+    }
+    
+    .subtitle {
+        font-size: 18px;
+        font-weight: 500;
+        padding-bottom: 10px;
+    }
+    
+    .telno {
+        padding-bottom: 10px;
+        font-size: 16px;
+    }
+}

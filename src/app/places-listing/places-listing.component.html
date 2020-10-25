@@ -1,10 +1,11 @@
 <div *ngIf="!placesAreLoading; else loading">
-    <mat-selection-list *ngIf="places && searchMode === 'byQuery'" >
-        <app-place-item *ngFor="let place of places" [place]="place"></app-place-item>
-    </mat-selection-list>
+  <mat-selection-list *ngIf="places && searchMode === 'byQuery'" class="list">
+    <app-place-item
+      *ngFor="let place of places"
+      [place]="place"
+    ></app-place-item>
+  </mat-selection-list>
 </div>
 <ng-template #loading>
-    <p>
-        places loading...
-    </p>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>

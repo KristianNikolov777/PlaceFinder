@@ -1,3 +1,19 @@
 .active {
-    background-color: aliceblue;
+  background-color: #455f85 !important;
+  color: #fafafa !important;
+}
+
+a:hover {
+  background-color: aliceblue;
+}
+
+@media (max-width: 768px) {
+  img {
+    display: none;
+  }
+
+  .mat-list-item {
+    height: 55px !important;
+    border-bottom: 1px solid #fadcdc;
+  }
 }

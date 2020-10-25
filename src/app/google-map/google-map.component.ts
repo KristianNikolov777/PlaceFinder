@@ -35,6 +35,9 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   markers: google.maps.Marker[] = [];
   markerOptions = { draggable: false, animation: google.maps.Animation.DROP };
   markerPositions: google.maps.LatLngLiteral[] = [];
+  infoWindow: google.maps.InfoWindow;
+  
+
 
   // @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow
 
@@ -42,7 +45,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     let previousMarker: google.maps.Marker;
-    console.log(previousMarker);
+    // console.log(previousMarker);
     
     this.placesChangedSub = this.placeService.placesChanged.subscribe(
       (places: Place[]) => {
@@ -54,7 +57,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
         places.forEach((place) => {
           this.preloadMarker(place.location, place.name);
         });
-        console.log(this.preloadedMarkers);
+        // console.log(this.preloadedMarkers);
         
         this.loadAllMarkers();
       }
@@ -62,9 +65,14 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.placeSelectedSub = this.placeService.placeSelected.subscribe(
       (place: Place) => {
-        console.log(previousMarker);
+        // console.log(previousMarker);
+        // console.log(window.screen);
+        
         
         if (place == null) return;
+        if (this.infoWindow) {
+          this.infoWindow.close()
+        }
 
         const selectedMarker: google.maps.Marker = this.markers.find(
           (marker) => {
@@ -82,15 +90,19 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
             
           console.log(selectedMarker) 
           
-          if (previousMarker && previousMarker.getTitle() !== selectedMarker.getTitle() ) {
+          if (previousMarker && previousMarker.getPosition().toString() !== selectedMarker.getPosition().toString() ) {
             this.clearMarkerAnimation(previousMarker)
           }
           this.map.setCenter(selectedMarker.getPosition());
-          this.map.setZoom(13);
+          this.map.setZoom(16);
           this.highlightMarker(selectedMarker);
           previousMarker = selectedMarker;
-          // this.clearMarkersAnimation();
-          console.log(selectedMarker.getAnimation())
+         
+          //Show infoWindow for smaller devices only in place of the placeDetail component we have for bigger devices. 
+          if (window.screen.width <= 768) {
+            this.showInfoWindow(selectedMarker, place);
+          }
+          
           
           
         // }
@@ -120,7 +132,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       position: new google.maps.LatLng(position.lat, position.lng),
       map: this.map,
       title: placeName,
-      options: { draggable: false, animation: google.maps.Animation.DROP, icon: '../../assets/images/marker.png' },
+      options: { draggable: false, animation: google.maps.Animation.DROP },
     };
     this.preloadedMarkers.push(this.markerInfo);
   }
@@ -135,10 +147,6 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       marker.setMap(this.map);
       this.markers.push(marker);
 
-      // const infoWindow = new google.maps.InfoWindow({
-      //   content: marker.getTitle()
-      // });
-      // infoWindow.open(marker.getMap(), marker);
     });
   }
 
@@ -157,7 +165,9 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   onClickMarker(marker: google.maps.Marker) {
     // this.clearMarkersAnimation();
     // this.highlightMarker(marker);
-
+    // if (this.infoWindow) {
+    //   this.infoWindow.close()
+    // }
     const places: Place[] = this.placeService.getPlaces();
     const markerLocation = {
       lat: marker.getPosition().lat(),
@@ -167,8 +177,9 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       return (
         place.location.lat === markerLocation.lat &&
         place.location.lng === markerLocation.lng
-      );
-    });
+        );
+      });
+    // this.showInfoWindow(marker, markerPlace);
     this.placeService.placeSelected.next(markerPlace);
   }
 
@@ -188,6 +199,20 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.placesChangedSub.unsubscribe();
     this.placeSelectedSub.unsubscribe();
     this.searchChangedSub.unsubscribe();
+  }
+
+  showInfoWindow(marker: google.maps.Marker, place: Place) {
+      this.infoWindow = new google.maps.InfoWindow({
+        content: `<div class="custom-info-window">
+          <img height="60" width="auto" src="${place.imgUrl}" alt=""/>
+            <div class="title">${place.name}</div>
+            <div class="subtitle">${place.address}</div>
+            <div class="telno">${place.phoneNumber || ''}</div>
+            <p>${place.rating || ''}</p>
+            <a class="url" href="${place.webpageUrl || '#'}" target="_blank">${place.webpageUrl || ''}</a>
+          </div>`
+      });
+      this.infoWindow.open(marker.getMap(), marker);
   }
 
   // getCurrentPos(): Promise<google.maps.LatLngLiteral> | google.maps.LatLngLiteral {

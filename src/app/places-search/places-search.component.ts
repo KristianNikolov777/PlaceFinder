@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
   Output,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Place } from '../shared/place.model';
@@ -73,18 +73,17 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
       this.placeService.placeIsLoading.next(true);
       const unformatedPlaces = searchBox.getPlaces();
       this.placeService.resetPlaces();
-      this.placeService.getPlacesDetails(unformatedPlaces).then((results) => {
+      this.placeService.getPlacesDetails(unformatedPlaces).then((results) => {        
         const places: Place[] = results
           .filter((result) => result != undefined)
           .map(this.placeService.createPlace);
-        
+
         this.placeService.setPlaces([...places]);
-        
       });
     });
   }
 
-  private emptyInput() {
+  emptyInput() {
     this.searchBoxEl.nativeElement.value = null;
     this.autocompleteEl.nativeElement.value = null;
   }

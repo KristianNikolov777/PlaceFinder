@@ -1,26 +1,30 @@
-<div *ngIf="placeIsLoading">
-  <mat-card-header>
-    <mat-card-title>Place is loading...</mat-card-title>
-  </mat-card-header>
-</div>
+<mat-progress-bar
+  *ngIf="placeIsLoading"
+  mode="indeterminate"
+></mat-progress-bar>
 <div class="place-detail" *ngIf="place">
   <mat-card>
-
-    <div>
-      <img mat-card-image [src]="place.imgUrl" alt="" class="img-responsive" style="max-width: 240px;"/>
-    <mat-card-header>
-      
-      <mat-card-title>{{ place.name }}</mat-card-title>
-      <mat-card-subtitle>{{ place.address}}</mat-card-subtitle>
-    </mat-card-header>
+    <img mat-card-image [src]="place.imgUrl" alt="" />
     <mat-card-content>
+      <mat-card-title>{{ place.name }}</mat-card-title>
+      <mat-card-subtitle>{{ place.address }}</mat-card-subtitle>
       <p *ngIf="place.phoneNumber">{{ place.phoneNumber }}</p>
-      <p *ngIf="place.isOpen !== null">{{ place.isOpen ? "Open" : "Closed" }}</p>
-      <p *ngIf="place.rating">{{ place.rating }}</p>
-      <a *ngIf="place.webpageUrl" [href]="place.webpageUrl" target="_blank">{{ place.webpageUrl }}</a>
+      <p
+        *ngIf="place.isOpen !== null"
+        [ngStyle]="{ color: place.isOpen ? 'green' : 'red' }"
+      >
+        {{ place.isOpen ? "Open" : "Closed" }}
+      </p>
+      <div *ngIf="place.rating">
+        <p>Rating:{{ place.rating }}</p>
+      </div>
+      <a
+        class="url"
+        *ngIf="place.webpageUrl"
+        [href]="place.webpageUrl"
+        target="_blank"
+        >{{ place.webpageUrl }}</a
+      >
     </mat-card-content>
-    </div>
-    
   </mat-card>
-  </div>
-  
+</div>

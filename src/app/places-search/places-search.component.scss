@@ -1,0 +1,24 @@
+::ng-deep {
+.tabs {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 6px 0 rgba(0,0,0,0.16);
+    padding:  0 15px;
+    opacity: 0.8;
+
+    .mat-tab-label {
+        font-weight: 700;
+        color: #191a1d;
+        line-height: 1.21;
+        font-size: 18px;
+    }
+}
+}
+.place-detail {
+    max-width: 400px;
+}
+@media (max-width: 768px) {
+    .place-detail {
+        display: none;
+    }
+}

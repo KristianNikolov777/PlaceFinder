@@ -24,7 +24,7 @@ export class PlacesListingComponent implements OnInit, OnDestroy {
       this.places = places;
     });
 
-    this.searchChangedSub = this.placeService.searchModeChanged.subscribe((searchMode) => {
+    this.searchChangedSub = this.placeService.searchModeChanged.subscribe((searchMode: string) => {
       this.searchMode = searchMode;
     })
 
@@ -32,6 +32,17 @@ export class PlacesListingComponent implements OnInit, OnDestroy {
       this.placesAreLoading = placesAreLoading;
       this.cd.detectChanges();
     })
+
+    if (window.screen.width <= 768) {
+      this.placeService.placeSelected.subscribe((selectedPlace: Place) => {
+       if (this.places && this.places.length > 1) {
+        this.places.splice(this.places.indexOf(selectedPlace), 1);
+        this.places.unshift(selectedPlace);
+        console.log(this.places);
+       }
+        
+      } )
+    }
   }
 
   ngOnDestroy() {

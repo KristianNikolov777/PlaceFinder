@@ -17,6 +17,9 @@ export class PlaceItemComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.selectedPlaceSub = this.placeService.placeSelected.subscribe((place: Place) => {
+      if (!place) return;
+      console.log(place);
+      
       this.selectedPlace = place;
       this.cd.detectChanges()
     })
