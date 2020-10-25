@@ -1,30 +1,19 @@
-<mat-progress-bar
-  *ngIf="placeIsLoading"
-  mode="indeterminate"
-></mat-progress-bar>
+<mat-progress-bar *ngIf="placeIsLoading" mode="indeterminate"></mat-progress-bar>
 <div class="place-detail" *ngIf="place">
   <mat-card>
-    <img mat-card-image [src]="place.imgUrl" alt="" />
+    <img mat-card-image [src]="place.imgUrl"
+      onerror="this.onerror=null;this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQXBKqhH8VS4qdb6Lcu-6SOe0qKxQmZo3pJvQ&usqp=CAU'" />
     <mat-card-content>
       <mat-card-title>{{ place.name }}</mat-card-title>
       <mat-card-subtitle>{{ place.address }}</mat-card-subtitle>
       <p *ngIf="place.phoneNumber">{{ place.phoneNumber }}</p>
-      <p
-        *ngIf="place.isOpen !== null"
-        [ngStyle]="{ color: place.isOpen ? 'green' : 'red' }"
-      >
+      <p *ngIf="place.isOpen !== null" [ngStyle]="{ color: place.isOpen ? 'green' : 'red' }">
         {{ place.isOpen ? "Open" : "Closed" }}
       </p>
       <div *ngIf="place.rating">
         <p>Rating:{{ place.rating }}</p>
       </div>
-      <a
-        class="url"
-        *ngIf="place.webpageUrl"
-        [href]="place.webpageUrl"
-        target="_blank"
-        >{{ place.webpageUrl }}</a
-      >
+      <a class="url" *ngIf="place.webpageUrl" [href]="place.webpageUrl" target="_blank">{{ place.webpageUrl }}</a>
     </mat-card-content>
   </mat-card>
 </div>

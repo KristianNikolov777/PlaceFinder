@@ -23,8 +23,11 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   placeSelectedSub: Subscription;
   searchChangedSub: Subscription;
   map: google.maps.Map;
-  cyprusDefaultpos: google.maps.LatLngLiteral = { lat: 35.095192, lng: 33.20343 };
-  defaultZoom = 8.3;
+  cyprusDefaultpos: google.maps.LatLngLiteral = {
+    lat: 35.095192,
+    lng: 33.20343,
+  };
+  defaultZoom = window.screen.width <= 768 ? 7.6 : 8.3;
   mapOptions: google.maps.MapOptions = {
     center: this.cyprusDefaultpos,
     zoom: this.defaultZoom,
@@ -36,42 +39,33 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
   markerOptions = { draggable: false, animation: google.maps.Animation.DROP };
   markerPositions: google.maps.LatLngLiteral[] = [];
   infoWindow: google.maps.InfoWindow;
-  
-
-
-  // @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow
 
   constructor(private placeService: PlaceService) {}
 
   ngOnInit(): void {
     let previousMarker: google.maps.Marker;
-    // console.log(previousMarker);
-    
+
     this.placesChangedSub = this.placeService.placesChanged.subscribe(
       (places: Place[]) => {
-       
-        if (places.length < 1) return
+        if (places.length < 1) return;
 
         this.deleteMarkers();
 
         places.forEach((place) => {
           this.preloadMarker(place.location, place.name);
         });
-        // console.log(this.preloadedMarkers);
-        
+
         this.loadAllMarkers();
       }
     );
 
     this.placeSelectedSub = this.placeService.placeSelected.subscribe(
       (place: Place) => {
-        // console.log(previousMarker);
-        // console.log(window.screen);
-        
-        
         if (place == null) return;
+
+        //Close the infowindow every time a place is selected.
         if (this.infoWindow) {
-          this.infoWindow.close()
+          this.infoWindow.close();
         }
 
         const selectedMarker: google.maps.Marker = this.markers.find(
@@ -87,35 +81,39 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
             );
           }
         );
-            
-          console.log(selectedMarker) 
-          
-          if (previousMarker && previousMarker.getPosition().toString() !== selectedMarker.getPosition().toString() ) {
-            this.clearMarkerAnimation(previousMarker)
-          }
-          this.map.setCenter(selectedMarker.getPosition());
-          this.map.setZoom(16);
-          this.highlightMarker(selectedMarker);
-          previousMarker = selectedMarker;
-         
-          //Show infoWindow for smaller devices only in place of the placeDetail component we have for bigger devices. 
-          if (window.screen.width <= 768) {
-            this.showInfoWindow(selectedMarker, place);
-          }
-          
-          
-          
-        // }
+
+        //Clear previous marker animation in case the user didn't choose the same place twice
+        if (
+          previousMarker &&
+          previousMarker.getPosition().toString() !==
+            selectedMarker.getPosition().toString()
+        ) {
+          this.clearMarkerAnimation(previousMarker);
+        }
+
+        //Center and zoom the map on the selected place every time there is one
+        this.map.setCenter(selectedMarker.getPosition());
+        this.map.setZoom(16);
+        this.highlightMarker(selectedMarker);
+        previousMarker = selectedMarker;
+
+        //Show infoWindow for smaller devices only(For the bigger devices we show the placeDetail component).
+        if (window.screen.width <= 768) {
+          this.showInfoWindow(selectedMarker, place);
+        }
       }
     );
 
-    this.searchChangedSub = this.placeService.searchModeChanged.subscribe(() => {
-      if (!this.map) return
-      this.deleteMarkers();
-      this.placeService.resetPlaces();
-      this.map.setCenter(this.cyprusDefaultpos);
-      this.map.setZoom(this.defaultZoom)
-    })
+    this.searchChangedSub = this.placeService.searchModeChanged.subscribe(
+      () => {
+        //Reset the map on searchmode change
+        if (!this.map) return;
+        this.deleteMarkers();
+        this.placeService.resetPlaces();
+        this.map.setCenter(this.cyprusDefaultpos);
+        this.map.setZoom(this.defaultZoom);
+      }
+    );
   }
 
   ngAfterViewInit() {
@@ -139,14 +137,12 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadAllMarkers() {
     this.preloadedMarkers.forEach((markerInfo) => {
-      
       const marker = new google.maps.Marker({ ...markerInfo });
       marker.addListener('click', () => {
         this.onClickMarker(marker);
       });
       marker.setMap(this.map);
       this.markers.push(marker);
-
     });
   }
 
@@ -162,12 +158,16 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.markers = [];
   }
 
+  highlightMarker(marker: google.maps.Marker) {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
+
+  clearMarkerAnimation(marker: google.maps.Marker) {
+    marker.setAnimation(null);
+  }
+
   onClickMarker(marker: google.maps.Marker) {
-    // this.clearMarkersAnimation();
-    // this.highlightMarker(marker);
-    // if (this.infoWindow) {
-    //   this.infoWindow.close()
-    // }
+    //Once a marker is clicked we emit the marker's place as a selected place. 
     const places: Place[] = this.placeService.getPlaces();
     const markerLocation = {
       lat: marker.getPosition().lat(),
@@ -177,22 +177,26 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
       return (
         place.location.lat === markerLocation.lat &&
         place.location.lng === markerLocation.lng
-        );
-      });
-    // this.showInfoWindow(marker, markerPlace);
+      );
+    });
+
     this.placeService.placeSelected.next(markerPlace);
   }
 
-  highlightMarker(marker: google.maps.Marker) {
-    marker.setAnimation(google.maps.Animation.BOUNCE);
-  }
-
-  clearMarkersAnimation() {
-    this.markers.forEach(this.clearMarkerAnimation);
-  }
-
-  clearMarkerAnimation(marker: google.maps.Marker) {
-    marker.setAnimation(null)
+  showInfoWindow(marker: google.maps.Marker, place: Place) {
+    this.infoWindow = new google.maps.InfoWindow({
+      content: `<div class="custom-info-window">
+          <img height="60" width="auto" src="${place.imgUrl}" alt=""/>
+            <div class="title">${place.name}</div>
+            <div class="subtitle">${place.address}</div>
+            <div class="telno">${place.phoneNumber || ''}</div>
+            <p>${place.rating || ''}</p>
+            <a class="url" href="${place.webpageUrl || '#'}" target="_blank">${
+        place.webpageUrl || ''
+      }</a>
+          </div>`,
+    });
+    this.infoWindow.open(marker.getMap(), marker);
   }
 
   ngOnDestroy() {
@@ -201,35 +205,4 @@ export class GoogleMapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchChangedSub.unsubscribe();
   }
 
-  showInfoWindow(marker: google.maps.Marker, place: Place) {
-      this.infoWindow = new google.maps.InfoWindow({
-        content: `<div class="custom-info-window">
-          <img height="60" width="auto" src="${place.imgUrl}" alt=""/>
-            <div class="title">${place.name}</div>
-            <div class="subtitle">${place.address}</div>
-            <div class="telno">${place.phoneNumber || ''}</div>
-            <p>${place.rating || ''}</p>
-            <a class="url" href="${place.webpageUrl || '#'}" target="_blank">${place.webpageUrl || ''}</a>
-          </div>`
-      });
-      this.infoWindow.open(marker.getMap(), marker);
-  }
-
-  // getCurrentPos(): Promise<google.maps.LatLngLiteral> | google.maps.LatLngLiteral {
-
-  //   if (navigator.geolocation) {
-  //     return new Promise((resolve, reject) => {
-  //       navigator.geolocation.getCurrentPosition(function (position) {
-  //         resolve({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-
-  //         reject(this.cyprusDefaultpos);
-  //       });
-  //     })
-  //   } else {
-  //     return this.cyprusDefaultpos;
-  //   }
-  // }
 }

@@ -38,42 +38,31 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
 
   constructor(private placeService: PlaceService) {}
 
-  ngOnInit(): void {
-    // this.placeService.placeSelected.subscribe((place: Place) => {
-    //   if (place) {
-    //     this.placeIsLoading = false;
-    //   }
-    // }
-    // )
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
-    this.getPlaceAutocomplete();
+    this.createSearchbox();
   }
 
-  public onAddressChange(address: any) {
+  //This method is called when we search by place
+  onAddressChange(address: any) {
     this.placeService.resetPlaces();
     const place = this.placeService.createPlace(address);
     this.placeService.setPlaces([place]);
   }
 
-  public onSelectedTabChange(matTabChange: MatTabChangeEvent) {
-    this.emptyInput();
-    this.searchMode = matTabChange.index === 0 ? 'byPlace' : 'byQuery';
-    this.placeService.searchModeChanged.next(this.searchMode);
-  }
-
-  private getPlaceAutocomplete() {
+  //This method is called when we search by query
+  createSearchbox() {
     if (!this.searchBoxEl) return;
     const searchBox = new google.maps.places.SearchBox(
       this.searchBoxEl.nativeElement,
       this.options
     );
-    google.maps.event.addListener(searchBox, 'places_changed', async () => {
+    google.maps.event.addListener(searchBox, 'places_changed', () => {
       this.placeService.placeIsLoading.next(true);
       const unformatedPlaces = searchBox.getPlaces();
       this.placeService.resetPlaces();
-      this.placeService.getPlacesDetails(unformatedPlaces).then((results) => {        
+      this.placeService.getPlacesDetails(unformatedPlaces).then((results) => {
         const places: Place[] = results
           .filter((result) => result != undefined)
           .map(this.placeService.createPlace);
@@ -81,6 +70,12 @@ export class PlacesSearchComponent implements OnInit, AfterViewInit {
         this.placeService.setPlaces([...places]);
       });
     });
+  }
+
+  public onSelectedTabChange(matTabChange: MatTabChangeEvent) {
+    this.emptyInput();
+    this.searchMode = matTabChange.index === 0 ? 'byPlace' : 'byQuery';
+    this.placeService.searchModeChanged.next(this.searchMode);
   }
 
   emptyInput() {

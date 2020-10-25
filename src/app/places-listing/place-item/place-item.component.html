@@ -1,16 +1,18 @@
+<a
+  mat-list-item
+  style="cursor: pointer"
+  (click)="onSelectPlace()"
+  [ngClass]="{ active: place.id === selectedPlace.id }"
+>
+  <h4 matLine>{{ place.name }}</h4>
+  <p matLine>{{ place.address }}</p>
 
-    <a mat-list-item style="cursor: pointer;" (click)="onSelectPlace()" [ngClass]="{active: place.id === selectedPlace.id}">
-    
-        <h4 matLine >{{ place.name }}</h4>
-        <p matLine >{{ place.address }}</p>
-
-    
-        <img 
-        matListIcon
-        [src]="place.imgUrl" 
-        alt="{{ place.name }}" 
-        class="img-responsive" 
-        style="max-height: 100px;">
-    
+  <img
+    matListIcon
+    [src]="place.imgUrl"
+    alt="{{ place.name }}"
+    class="img-responsive"
+    style="max-height: 100px"
+    onerror="this.onerror=null;this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQXBKqhH8VS4qdb6Lcu-6SOe0qKxQmZo3pJvQ&usqp=CAU'"
+  />
 </a>
-

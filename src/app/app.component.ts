@@ -9,7 +9,6 @@ import { Place } from './shared/place.model';
 })
 export class AppComponent implements OnInit {
   title = 'PlaceFinder';
-  address: {};
   listIsActive = false;
 
   constructor(
@@ -24,10 +23,4 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getAddress(place: object) { 
-    this.address = place['formatted_address'];
-    // ('-----------console.log-------------------------');
-    
-    //console.log(this.address)
-  }
 }

@@ -14,7 +14,8 @@ export class PlacesListingComponent implements OnInit, OnDestroy {
   placesAreLoading: boolean;
   placeChangedSub: Subscription;
   searchChangedSub: Subscription;
-  loadingStatusSub: Subscription
+  loadingStatusSub: Subscription;
+  placeSelectedSub: Subscription;
   
 
   constructor(private placeService: PlaceService, private cd: ChangeDetectorRef) { }
@@ -33,12 +34,12 @@ export class PlacesListingComponent implements OnInit, OnDestroy {
       this.cd.detectChanges();
     })
 
+    //on smaller devices we put the selected place on top of the list because of the list small size
     if (window.screen.width <= 768) {
       this.placeService.placeSelected.subscribe((selectedPlace: Place) => {
        if (this.places && this.places.length > 1) {
         this.places.splice(this.places.indexOf(selectedPlace), 1);
         this.places.unshift(selectedPlace);
-        console.log(this.places);
        }
         
       } )
@@ -49,6 +50,9 @@ export class PlacesListingComponent implements OnInit, OnDestroy {
     this.placeChangedSub.unsubscribe();
     this.searchChangedSub.unsubscribe();
     this.loadingStatusSub.unsubscribe();
+    if (this.placeSelectedSub) {
+      this.placeSelectedSub.unsubscribe();
+    }
   }
 
 }

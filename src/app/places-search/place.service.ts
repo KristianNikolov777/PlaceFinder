@@ -17,12 +17,8 @@ export class PlaceService {
 
   private places: Place[] = [];
 
-  // getPlace (index: number) {
-  //   return this.places[index];
-  // }
-
-  getPlaces() {
-    return [...this.places];
+  initGooglePlacesService(map: google.maps.Map) {
+    this.googlePlacesService = new google.maps.places.PlacesService(map);
   }
 
   createPlace(unformatedPlace: any) {
@@ -51,6 +47,10 @@ export class PlaceService {
     return place;
   }
 
+  getPlaces() {
+    return [...this.places];
+  }
+
   setPlaces(places: Place[]) {
     this.places = places;
     this.placesChanged.next([...this.places]);
@@ -62,15 +62,9 @@ export class PlaceService {
     this.placeSelected.next(null);
   }
 
-  initGooglePlacesService(map: google.maps.Map) {
-    this.googlePlacesService = new google.maps.places.PlacesService(map);
-  }
-
-  getPlacesDetails(unformatedPlaces: any): Promise<any> {
-    return Promise.all(unformatedPlaces.map(this.getPlaceDetails.bind(this)));
-  }
-
   getPlaceDetails(unformatedPlace): Promise<any> {
+    /* Maybe I should return an observable here and use the forkJoin operator
+       instead of the promiseAll used in getPlacesDetails...*/
     return new Promise((resolve, reject) => {
       const request: google.maps.places.PlaceDetailsRequest = {
         placeId: unformatedPlace.place_id,
@@ -101,4 +95,9 @@ export class PlaceService {
       console.log(error);
     });
   }
+
+  getPlacesDetails(unformatedPlaces: any): Promise<any> {
+    return Promise.all(unformatedPlaces.map(this.getPlaceDetails.bind(this)));
+  }
+
 }
