@@ -1,8 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
-// @import "~bootstrap/dist/css/bootstrap.css";
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: hidden; }
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+   }
+   ::-webkit-scrollbar-thumb {
+    background: #b1b2c2;
+    border-radius: 7px;
+   }
+   ::-webkit-scrollbar-thumb:hover{
+    background: #EDEFFF;
+   }
+   ::-webkit-scrollbar-track{
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: inset 7px 10px 12px #f0f0f0;
+   }
 
 .url {
     width: 250px;

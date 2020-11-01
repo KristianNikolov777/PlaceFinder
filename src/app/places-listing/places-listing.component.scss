@@ -1,9 +1,15 @@
 mat-selection-list {
     padding: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
+
+mat-selection-list:focus {
+    outline: none;
+}
+
 @media (max-width: 768px) {
-    .list {
+    mat-selection-list {
         height: 25vh;
-        overflow-y: auto;
     }
 }
